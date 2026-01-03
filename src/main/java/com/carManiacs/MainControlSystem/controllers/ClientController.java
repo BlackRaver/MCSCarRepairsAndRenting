@@ -1,6 +1,8 @@
 package com.carManiacs.MainControlSystem.controllers;
 
 import com.carManiacs.MainControlSystem.domain.data.ClientRequest;
+import com.carManiacs.MainControlSystem.domain.data.ContactDataDto;
+import com.carManiacs.MainControlSystem.domain.data.ContactDataRequest;
 import com.carManiacs.MainControlSystem.domain.models.Client;
 import com.carManiacs.MainControlSystem.domain.views.ClientViews;
 import com.carManiacs.MainControlSystem.services.ClientService;
@@ -50,5 +52,20 @@ public class ClientController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         clientService.delete(id);
+    }
+
+    // ===== CONTACTS =====
+
+    @GetMapping("/{id}/contacts")
+    public List<ContactDataDto> getContacts(@PathVariable Long id) {
+        return clientService.getContacts(id);
+    }
+
+    @PutMapping("/{id}/contacts")
+    public List<ContactDataDto> updateContacts(
+            @PathVariable Long id,
+            @RequestBody List<ContactDataRequest> contacts) {
+
+        return clientService.updateContacts(id, contacts);
     }
 }

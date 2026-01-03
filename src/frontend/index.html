@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Warsztatu Samochodowego</title>
+
+    <!-- Style -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- React z CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+
+    <!-- Babel do JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <!-- Serwis API -->
+    <script type="text/babel" src="js/services/api.js"></script>
+
+    <!-- Komponenty UI -->
+    <script type="text/babel" src="js/components/Navbar.jsx"></script>
+    <script type="text/babel" src="js/components/SearchBox.jsx"></script>
+    <script type="text/babel" src="js/components/Modal.jsx"></script>
+    <script type="text/babel" src="js/components/DataTable.jsx"></script>
+
+    <!-- Strony -->
+    <script type="text/babel" src="js/pages/ClientsPage.jsx"></script>
+    <script type="text/babel" src="js/pages/VehiclesPage.jsx"></script>
+    <script type="text/babel" src="js/pages/OrdersPage.jsx"></script>
+    <script type="text/babel" src="js/pages/ClientContactsModal.jsx"></script>
+
+    <!-- Główna aplikacja -->
+    <script type="text/babel" src="js/App.jsx"></script>
+</body>
+
+</html>
