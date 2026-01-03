@@ -22,13 +22,14 @@ function VehiclesPage() {
         { key: 'vin', label: 'VIN' },
         { key: 'vehicleType', label: 'Typ' },
         { key: 'available', label: 'Dostępny' },
-        { key: 'client', label: 'Właściciel' }
+        { key: 'client.id', label: 'Właściciel' }
     ];
 
     React.useEffect(() => {
         loadData();
     }, []);
 
+    
     const loadData = async () => {
         const [vehiclesData, clientsData] = await Promise.all([
             window.apiService.getVehicles(),
@@ -39,20 +40,23 @@ function VehiclesPage() {
     };
 
     // ===== RENDER KOMÓREK =====
-    const renderCell = (key, value, row) => {
-        if (key === 'client') {
-            return row.client
-                ? `${row.client.firstName} ${row.client.lastName}`
-                : '—';
-        }
+  const renderCell = (key, value, row) => {
+    if (key === 'client') {
+        if (!row.client) return '—';
 
-        if (key === 'available') {
-            if (value === null) return '—';
-            return value ? 'TAK' : 'NIE';
-        }
+        const c = row.client;
+        return c.clientType === 'COMPANY'
+            ? c.companyName
+            : `${c.firstName} ${c.lastName}`;
+    }
 
-        return value;
-    };
+    if (key === 'available') {
+        if (value === null) return '—';
+        return value ? 'TAK' : 'NIE';
+    }
+
+    return value;
+};
 
     // ===== FILTROWANIE =====
     const filteredVehicles = vehicles.filter(v => {
@@ -97,18 +101,20 @@ function VehiclesPage() {
         closeModal();
     };
 
-    const handleEdit = (vehicle) => {
-        setEditingVehicle(vehicle);
-        setFormData({
-            brand: vehicle.brand,
-            model: vehicle.model,
-            productionYear: vehicle.productionYear,
-            vin: vehicle.vin,
-            vehicleType: vehicle.vehicleType,
-            clientId: vehicle.client ? vehicle.client.id : ''
-        });
-        setIsModalOpen(true);
-    };
+const handleEdit = (vehicle) => {
+    setEditingVehicle(vehicle);
+
+    setFormData({
+        brand: vehicle.brand,
+        model: vehicle.model,
+        productionYear: vehicle.productionYear,
+        vin: vehicle.vin,
+        vehicleType: vehicle.vehicleType,
+        clientId: vehicle.client ? vehicle.client.id : ''
+    });
+
+    setIsModalOpen(true);
+};
 
     const handleDelete = async (id) => {
         if (confirm('Czy na pewno chcesz usunąć ten pojazd?')) {

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/api/vehicles")
 @RequiredArgsConstructor
 public class VehicleController {
@@ -44,7 +43,7 @@ public class VehicleController {
      * Dodanie nowego pojazdu
      * DTO jako input
      */
-    @PostMapping("/new")
+    @PostMapping
     public Vehicle create(@Valid @RequestBody VehicleRequest request) {
         return vehicleService.create(request);
     }

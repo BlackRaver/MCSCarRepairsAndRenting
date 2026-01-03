@@ -28,7 +28,7 @@ public class Vehicle {
     private Long id;
 
     @Column(nullable = false, unique = true, length = 17)
-    @JsonView(VehicleViews.Detailed.class)
+    @JsonView(VehicleViews.Basic.class)
     private String vin;
 
     @JsonView(VehicleViews.Detailed.class)
@@ -55,7 +55,7 @@ public class Vehicle {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
-    @JsonView(VehicleViews.Detailed.class)
+    @JsonView(VehicleViews.Basic.class)
     private Client client;
 
 }
