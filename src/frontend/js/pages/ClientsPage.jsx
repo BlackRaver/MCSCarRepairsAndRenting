@@ -5,6 +5,12 @@
 
 function ClientsPage() {
 
+    const { role } = React.useContext(AuthContext);
+
+    const isClient = role === 'CLIENT';
+    const isEmployee = role === 'EMPLOYEE';
+    const isAdmin = role === 'ADMIN';
+
     const [clients, setClients] = React.useState([]);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [editingClient, setEditingClient] = React.useState(null);
@@ -109,6 +115,7 @@ function ClientsPage() {
     };
 
     const handleEdit = (client) => {
+        if (!isAdmin) return;
         setEditingClient(client);
         setFormData({
             clientType: client.clientType,
@@ -128,6 +135,7 @@ function ClientsPage() {
     };
 
     const openAddModal = () => {
+        if (isClient) return;
         setEditingClient(null);
         setFormData({
             clientType: 'PERSON',
@@ -164,19 +172,21 @@ function ClientsPage() {
                         onChange={setSearchQuery}
                         placeholder="Szukaj klientów..."
                     />
+                    {!isClient && (
                     <button className="btn btn-primary" onClick={openAddModal}>
                         ➕ Dodaj klienta
                     </button>
+                    )}
                 </div>
             </div>
 
             <DataTable
-                columns={columns}
-                data={filteredClients}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                onContact={handleContact}
-                renderCell={renderCell}
+            columns={columns}
+            data={filteredClients}
+            renderCell={renderCell}
+            onEdit={isAdmin ? handleEdit : undefined}
+            onDelete={isAdmin ? handleDelete : undefined}
+            onContact={!isClient ? handleContact : undefined}
             />
 
             <Modal
@@ -255,11 +265,13 @@ function ClientsPage() {
                 </form>
             </Modal>
 
-            <ClientContactsModal
-    client={contactClient}
-    isOpen={!!contactClient}
-    onClose={() => setContactClient(null)}
-/>
+  {!isClient && (
+    <ClientContactsModal
+        client={contactClient}
+        isOpen={!!contactClient}
+        onClose={() => setContactClient(null)}
+    />
+)}
         </div>
         
     );

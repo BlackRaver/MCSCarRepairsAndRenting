@@ -1,13 +1,12 @@
-/**
- * App - Główny komponent aplikacji
- * 
- * Zarządza stanem nawigacji i renderuje odpowiednią stronę
- */
 function App() {
-    // Aktualnie wybrana strona
+    const { role } = React.useContext(AuthContext);
     const [currentPage, setCurrentPage] = React.useState('clients');
 
-    // Renderuj odpowiednią stronę
+    // 🔒 Jeśli nie wybrano roli → pokaż panel startowy
+    if (!role) {
+        return <RoleSelectPage />;
+    }
+
     const renderPage = () => {
         switch (currentPage) {
             case 'clients':
@@ -31,6 +30,10 @@ function App() {
     );
 }
 
-// Renderowanie aplikacji do DOM
+// Renderowanie aplikacji
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+root.render(
+    <AuthProvider>
+        <App />
+    </AuthProvider>
+);
