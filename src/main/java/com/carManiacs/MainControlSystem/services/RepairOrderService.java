@@ -94,7 +94,7 @@ public class RepairOrderService {
     // =========================
     public RepairOrder closeRepairOrder(Long id) {
         RepairOrder order = findById(id);
-        order.setStatus(RepairStatus.CLOSED);
+        order.setStatus(RepairStatus.COMPLETED);
         return order;
     }
 

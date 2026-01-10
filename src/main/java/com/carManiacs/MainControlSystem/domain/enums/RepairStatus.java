@@ -5,5 +5,5 @@ public enum RepairStatus {
     IN_PROGRESS,
     WAITING_FOR_PARTS,
     READY,
-    CLOSED
+    COMPLETED
 }
