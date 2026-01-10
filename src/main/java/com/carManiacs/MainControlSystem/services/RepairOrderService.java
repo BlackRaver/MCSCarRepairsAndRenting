@@ -1,15 +1,19 @@
 package com.carManiacs.MainControlSystem.services;
 
 import com.carManiacs.MainControlSystem.domain.enums.RepairStatus;
-import com.carManiacs.MainControlSystem.domain.enums.VehicleType;
-import com.carManiacs.MainControlSystem.domain.models.*;
-import com.carManiacs.MainControlSystem.repositories.*;
-import jakarta.transaction.Transactional;
+import com.carManiacs.MainControlSystem.domain.models.Client;
+import com.carManiacs.MainControlSystem.domain.models.RepairOrder;
+import com.carManiacs.MainControlSystem.domain.models.Vehicle;
+import com.carManiacs.MainControlSystem.repositories.ClientRepository;
+import com.carManiacs.MainControlSystem.repositories.RepairOrderRepository;
+import com.carManiacs.MainControlSystem.repositories.VehicleRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,89 +23,86 @@ public class RepairOrderService {
     private final RepairOrderRepository repairOrderRepository;
     private final VehicleRepository vehicleRepository;
     private final ClientRepository clientRepository;
-    private final EmployeeRepository employeeRepository;
-    private final RentalRepository rentalRepository;
 
+    // =========================
+    // LISTA ZLECEŃ
+    // =========================
+    @Transactional(readOnly = true)
+    public List<RepairOrder> findAll() {
+        return repairOrderRepository.findAll();
+    }
+
+    // =========================
+    // SZCZEGÓŁY ZLECENIA
+    // =========================
+    @Transactional(readOnly = true)
+    public RepairOrder findById(Long id) {
+        return repairOrderRepository.findById(id)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("RepairOrder not found: " + id)
+                );
+    }
+
+    // =========================
+    // UTWORZENIE ZLECENIA
+    // =========================
     public RepairOrder createRepairOrder(
             Long vehicleId,
             Long clientId,
-            boolean withReplacementCar) {
-
+            Boolean replacementCar
+    ) {
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
-                .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Vehicle not found: " + vehicleId)
+                );
 
         Client client = clientRepository.findById(clientId)
-                .orElseThrow(() -> new IllegalArgumentException("Client not found"));
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Client not found: " + clientId)
+                );
 
         RepairOrder order = new RepairOrder();
         order.setVehicle(vehicle);
         order.setClient(client);
         order.setStatus(RepairStatus.CREATED);
         order.setReceivedAt(LocalDateTime.now());
+        order.setRental(null);
 
-        repairOrderRepository.save(order);
+        return repairOrderRepository.save(order);
+    }
 
-        if (withReplacementCar) {
-            createRental(order, client);
-        }
-
+    // =========================
+    // EDYCJA ZLECENIA (opis)
+    // =========================
+    public RepairOrder updateOrder(Long id, String description) {
+        RepairOrder order = findById(id);
+        order.setDescription(description);
         return order;
     }
 
-    public RepairOrder assignMechanic(Long orderId, Long mechanicId) {
-        RepairOrder order = repairOrderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
-
-        Employee mechanic = employeeRepository.findById(mechanicId)
-                .orElseThrow(() -> new IllegalArgumentException("Mechanic not found"));
-
-        order.setMechanic(mechanic);
-        return order;
-    }
-
-    public RepairOrder changeStatus(Long orderId, RepairStatus status) {
-        RepairOrder order = repairOrderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
-
+    // =========================
+    // ZMIANA STATUSU
+    // =========================
+    public RepairOrder changeStatus(Long id, RepairStatus status) {
+        RepairOrder order = findById(id);
         order.setStatus(status);
         return order;
     }
 
-    public RepairOrder closeRepairOrder(Long orderId) {
-        RepairOrder order = repairOrderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
-
+    // =========================
+    // ZAMKNIĘCIE ZLECENIA
+    // =========================
+    public RepairOrder closeRepairOrder(Long id) {
+        RepairOrder order = findById(id);
         order.setStatus(RepairStatus.CLOSED);
-        order.setFinishedAt(LocalDateTime.now());
-
-        closeRental(order);
-
         return order;
     }
 
-    private void createRental(RepairOrder order, Client client) {
-        Vehicle replacementCar = vehicleRepository.findFirstByVehicleTypeAndAvailableTrue(
-                VehicleType.RENTER
-        ).orElseThrow(() -> new IllegalStateException("No replacement cars available"));
-
-        Rental rental = new Rental();
-        rental.setVehicle(replacementCar);
-        rental.setClient(client);
-        rental.setRepairOrder(order);
-        rental.setStartDate(LocalDateTime.now());
-        rental.setDailyRate(BigDecimal.valueOf(100));
-
-        replacementCar.setAvailable(false);
-
-        rentalRepository.save(rental);
-        order.setRental(rental);
-    }
-
-    private void closeRental(RepairOrder order) {
-        Rental rental = order.getRental();
-        if (rental != null) {
-            rental.setEndDate(LocalDateTime.now());
-            rental.getVehicle().setAvailable(true);
-        }
+    // =========================
+    // USUNIĘCIE (ADMIN)
+    // =========================
+    public void delete(Long id) {
+        RepairOrder order = findById(id);
+        repairOrderRepository.delete(order);
     }
 }

@@ -1,16 +1,21 @@
+/**
+ * OrdersPage – lista i tworzenie zleceń serwisowych (Solution A)
+ * 
+ * Założenia:
+ * - Zlecenie tworzone jest minimalnie (vehicle + client)
+ * - Status = NEW nadawany przez backend
+ * - Brak edycji zlecenia z listy (szczegóły w osobnym ekranie)
+ */
+
 function OrdersPage() {
     const [orders, setOrders] = React.useState([]);
     const [vehicles, setVehicles] = React.useState([]);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
-    const [editingOrder, setEditingOrder] = React.useState(null);
     const [searchQuery, setSearchQuery] = React.useState('');
     const [statusFilter, setStatusFilter] = React.useState('ALL');
 
     const [formData, setFormData] = React.useState({
-        vehicleId: '',
-        description: '',
-        status: 'NEW',
-        notes: ''
+        vehicleId: ''
     });
 
     // ===== KOLUMNY =====
@@ -36,8 +41,9 @@ function OrdersPage() {
             window.apiService.getOrders(),
             window.apiService.getVehicles()
         ]);
-        setOrders(ordersData);
-        setVehicles(vehiclesData);
+
+        setOrders(Array.isArray(ordersData) ? ordersData : []);
+        setVehicles(Array.isArray(vehiclesData) ? vehiclesData : []);
     };
 
     // ===== RENDER KOMÓREK =====
@@ -52,19 +58,19 @@ function OrdersPage() {
                     : `${v.client.firstName} ${v.client.lastName}`
                 : '';
 
-            return `${v.brand} ${v.model} (${v.productionYear}) ${owner && `- ${owner}`}`;
+            return `${v.brand} ${v.model} (${v.productionYear})${owner ? ` - ${owner}` : ''}`;
         }
 
         if (key === 'status') {
             return (
                 <span className={`badge badge-${value.toLowerCase()}`}>
-                    {statusLabels[value]}
+                    {statusLabels[value] || value}
                 </span>
             );
         }
 
         if (key === 'totalCost') {
-            return `${row.totalCost.toFixed(2)} zł`;
+            return `${row.totalCost?.toFixed(2) ?? '0.00'} zł`;
         }
 
         if (key === 'createdAt') {
@@ -75,14 +81,16 @@ function OrdersPage() {
     };
 
     // ===== FILTROWANIE =====
-    const filteredOrders = orders.filter(o => {
+    const safeOrders = Array.isArray(orders) ? orders : [];
+
+    const filteredOrders = safeOrders.filter(o => {
         if (statusFilter !== 'ALL' && o.status !== statusFilter) return false;
 
         if (searchQuery) {
             const q = searchQuery.toLowerCase();
             return (
-                o.vehicle?.brand.toLowerCase().includes(q) ||
-                o.vehicle?.model.toLowerCase().includes(q)
+                o.vehicle?.brand?.toLowerCase().includes(q) ||
+                o.vehicle?.model?.toLowerCase().includes(q)
             );
         }
         return true;
@@ -92,32 +100,35 @@ function OrdersPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const vehicle = vehicles.find(v => v.id == formData.vehicleId);
+
         const payload = {
-            vehicleId: parseInt(formData.vehicleId),
-            description: formData.description,
-            status: formData.status,
-            notes: formData.notes
+            vehicleId: Number(formData.vehicleId),
+            clientId: vehicle?.client?.id ?? null,
+            replacementCar: false
         };
 
-        if (editingOrder) {
-            await window.apiService.updateOrder(editingOrder.id, payload);
-        } else {
-            await window.apiService.createOrder(payload);
-        }
+        await window.apiService.createOrder(payload);
 
         await loadData();
         closeModal();
     };
 
-    const handleEdit = (order) => {
-        setEditingOrder(order);
-        setFormData({
-            vehicleId: order.vehicle.id,
-            description: order.description,
-            status: order.status,
-            notes: order.notes || ''
-        });
+    const openAddModal = () => {
+        setFormData({ vehicleId: '' });
         setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleEdit = () => {
+        alert('Edycja dostępna w szczegółach zlecenia');
     };
 
     const handleDelete = async (id) => {
@@ -125,26 +136,6 @@ function OrdersPage() {
             await window.apiService.deleteOrder(id);
             await loadData();
         }
-    };
-
-    const openAddModal = () => {
-        setEditingOrder(null);
-        setFormData({
-            vehicleId: '',
-            description: '',
-            status: 'NEW',
-            notes: ''
-        });
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setEditingOrder(null);
-    };
-
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     return (
@@ -170,7 +161,7 @@ function OrdersPage() {
             <Modal
                 isOpen={isModalOpen}
                 onClose={closeModal}
-                title={editingOrder ? 'Edytuj zlecenie' : 'Nowe zlecenie'}
+                title="Nowe zlecenie"
             >
                 <form onSubmit={handleSubmit}>
                     <select
@@ -187,34 +178,14 @@ function OrdersPage() {
                         ))}
                     </select>
 
-                    <input
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        placeholder="Opis zlecenia"
-                        required
-                    />
-
-                    <select
-                        name="status"
-                        value={formData.status}
-                        onChange={handleChange}
-                    >
-                        <option value="NEW">Nowe</option>
-                        <option value="IN_PROGRESS">W realizacji</option>
-                        <option value="COMPLETED">Zakończone</option>
-                    </select>
-
-                    <textarea
-                        name="notes"
-                        value={formData.notes}
-                        onChange={handleChange}
-                        placeholder="Notatki mechanika"
-                    />
-
-                    <button type="submit" className="btn btn-success">
-                        Zapisz
-                    </button>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary" onClick={closeModal}>
+                            Anuluj
+                        </button>
+                        <button type="submit" className="btn btn-success">
+                            Utwórz zlecenie
+                        </button>
+                    </div>
                 </form>
             </Modal>
         </div>
