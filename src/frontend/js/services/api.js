@@ -251,11 +251,105 @@ const apiService = {
     return true;
   },
 
+  // ========== PRACOWNICY ==========
+
+  /**
+   * Pobiera listę pracowników
+   * GET /api/employees
+   */
+  getEmployees: async () => {
+    if (USE_MOCKS) {
+      return Promise.resolve([...window.mockData.employees]);
+    }
+
+    const res = await fetch(`${API_BASE}/employees`);
+    return res.json();
+  },
+
+  /**
+   * Pobiera pojedynczego pracownika
+   * GET /api/employees/{id}
+   */
+  getEmployeeById: async (id) => {
+    if (USE_MOCKS) {
+      return Promise.resolve(
+        window.mockData.employees.find((e) => e.id === id)
+      );
+    }
+
+    const res = await fetch(`${API_BASE}/employees/${id}`);
+    return res.json();
+  },
+
+  /**
+   * Tworzy nowego pracownika
+   * POST /api/employees
+   * @param {Object} employee - { firstName, lastName, role }
+   */
+  createEmployee: async (employee) => {
+    if (USE_MOCKS) {
+      const newEmployee = { ...employee, id: Date.now() };
+      window.mockData.employees.push(newEmployee);
+      return Promise.resolve(newEmployee);
+    }
+
+    const res = await fetch(`${API_BASE}/employees`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(employee),
+    });
+
+    return res.json();
+  },
+
+  /**
+   * Aktualizuje pracownika
+   * PUT /api/employees/{id}
+   * @param {number} id
+   * @param {Object} employee - { firstName, lastName, role }
+   */
+  updateEmployee: async (id, employee) => {
+    if (USE_MOCKS) {
+      const idx = window.mockData.employees.findIndex((e) => e.id === id);
+      if (idx !== -1) {
+        window.mockData.employees[idx] = { ...employee, id };
+      }
+      return Promise.resolve(window.mockData.employees[idx]);
+    }
+
+    const res = await fetch(`${API_BASE}/employees/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(employee),
+    });
+
+    return res.json();
+  },
+
+  /**
+   * Usuwa pracownika
+   * DELETE /api/employees/{id}
+   */
+  deleteEmployee: async (id) => {
+    if (USE_MOCKS) {
+      window.mockData.employees = window.mockData.employees.filter(
+        (e) => e.id !== id
+      );
+      return Promise.resolve(true);
+    }
+
+    await fetch(`${API_BASE}/employees/${id}`, {
+      method: "DELETE",
+    });
+
+    return true;
+  },
+
   /**
    * Pobiera listę mechaników i ich zleceń
    */
   getMechanicWorkload: async () => {
-    const res = await fetch(`${API_BASE}/mechanics/workload`);
+    const res = await fetch(`${API_BASE}/employee/workload`);
     return res.json();
   },
 
@@ -263,7 +357,7 @@ const apiService = {
    * Przypisuje mechanika do zlecenia
    */
   assignMechanic: async (orderId, mechanicId) => {
-    await fetch(`${API_BASE}/repair-orders/${orderId}/mechanic/${mechanicId}`, {
+    await fetch(`${API_BASE}/orders/${orderId}/mechanic/${mechanicId}`, {
       method: "POST",
     });
   },
