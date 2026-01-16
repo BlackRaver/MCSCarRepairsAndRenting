@@ -183,77 +183,88 @@ function ClientsPage() {
                 isOpen={isModalOpen}
                 onClose={closeModal}
                 title={editingClient ? 'Edytuj klienta' : 'Nowy klient'}
-            >
+                >
                 <form onSubmit={handleSubmit}>
-
                     {/* TYP KLIENTA */}
                     <div className="form-group">
-                        <label className="form-label">Typ klienta</label>
-                        <select
-                            name="clientType"
-                            className="form-select"
-                            value={formData.clientType}
-                            onChange={handleChange}
-                        >
-                            <option value="PERSON">Osoba fizyczna</option>
-                            <option value="COMPANY">Firma</option>
-                        </select>
+                    <label className="form-label">Typ klienta</label>
+                    <select
+                        name="clientType"
+                        className="form-select"
+                        value={formData.clientType}
+                        onChange={handleChange}
+                    >
+                        <option value="PERSON">Osoba fizyczna</option>
+                        <option value="COMPANY">Firma</option>
+                    </select>
                     </div>
 
                     {/* OSOBA FIZYCZNA */}
                     {formData.clientType === 'PERSON' && (
-                        <>
-                            <input
-                                name="firstName"
-                                className="form-input"
-                                placeholder="Imię"
-                                value={formData.firstName}
-                                onChange={handleChange}
-                                required
-                            />
-                            <input
-                                name="lastName"
-                                className="form-input"
-                                placeholder="Nazwisko"
-                                value={formData.lastName}
-                                onChange={handleChange}
-                                required
-                            />
-                        </>
+                    <>
+                        <div className="form-group">
+                        <label className="form-label">Imię</label>
+                        <input
+                            name="firstName"
+                            className="form-input"
+                            placeholder="Imię"
+                            value={formData.firstName}
+                            onChange={handleChange}
+                            required
+                        />
+                        </div>
+                        <div className="form-group">
+                        <label className="form-label">Nazwisko</label>
+                        <input
+                            name="lastName"
+                            className="form-input"
+                            placeholder="Nazwisko"
+                            value={formData.lastName}
+                            onChange={handleChange}
+                            required
+                        />
+                        </div>
+                    </>
                     )}
 
                     {/* FIRMA */}
                     {formData.clientType === 'COMPANY' && (
-                        <>
-                            <input
-                                name="companyName"
-                                className="form-input"
-                                placeholder="Nazwa firmy"
-                                value={formData.companyName}
-                                onChange={handleChange}
-                                required
-                            />
-                            <input
-                                name="nip"
-                                className="form-input"
-                                placeholder="NIP"
-                                value={formData.nip}
-                                onChange={handleChange}
-                                required
-                            />
-                        </>
+                    <>
+                        <div className="form-group">
+                        <label className="form-label">Nazwa firmy</label>
+                        <input
+                            name="companyName"
+                            className="form-input"
+                            placeholder="Nazwa firmy"
+                            value={formData.companyName}
+                            onChange={handleChange}
+                            required
+                        />
+                        </div>
+                        <div className="form-group">
+                        <label className="form-label">NIP</label>
+                        <input
+                            name="nip"
+                            className="form-input"
+                            placeholder="NIP"
+                            value={formData.nip}
+                            onChange={handleChange}
+                            required
+                        />
+                        </div>
+                    </>
                     )}
 
                     <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" onClick={closeModal}>
-                            Anuluj
-                        </button>
-                        <button type="submit" className="btn btn-success">
-                            Zapisz
-                        </button>
+                    <button type="button" className="btn btn-secondary" onClick={closeModal}>
+                        Anuluj
+                    </button>
+                    <button type="submit" className="btn btn-success">
+                        Zapisz
+                    </button>
                     </div>
                 </form>
-            </Modal>
+                </Modal>
 
             <ClientContactsModal
     client={contactClient}

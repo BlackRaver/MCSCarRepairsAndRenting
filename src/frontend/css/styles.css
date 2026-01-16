@@ -454,6 +454,7 @@ body {
     font-size: 1rem;
     transition: border-color 0.2s, box-shadow 0.2s;
     font-family: inherit;
+    margin-bottom: 1rem;
 }
 
 .form-textarea {
