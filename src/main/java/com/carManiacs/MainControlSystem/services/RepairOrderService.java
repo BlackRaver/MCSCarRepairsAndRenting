@@ -1,6 +1,7 @@
 package com.carManiacs.MainControlSystem.services;
 
 import com.carManiacs.MainControlSystem.domain.data.OrderItemRequestDto;
+import com.carManiacs.MainControlSystem.domain.data.RepairOrderItemDto;
 import com.carManiacs.MainControlSystem.domain.enums.EmployeeRole;
 import com.carManiacs.MainControlSystem.domain.enums.RepairStatus;
 import com.carManiacs.MainControlSystem.domain.models.*;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -61,7 +63,7 @@ public class RepairOrderService {
         RepairOrder order = new RepairOrder();
         order.setVehicle(vehicle);
         order.setClient(client);
-        order.setStatus(RepairStatus.CREATED);
+        order.setStatus(RepairStatus.NEW);
         order.setReceivedAt(LocalDateTime.now());
         order.setRental(null);
 
@@ -140,5 +142,37 @@ public class RepairOrderService {
     private RepairOrder getOrder(Long id) {
         return repairOrderRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Zlecenie nie istnieje"));
+    }
+
+
+    private final RepairOrderRepository orderRepository;
+
+    public List<RepairOrderItemDto> getItems(Long orderId) {
+        RepairOrder order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        List<RepairOrderItemDto> items = new ArrayList<>();
+
+        // CZYNNOŚCI
+        for (RepairTask task : order.getTasks()) {
+            items.add(new RepairOrderItemDto(
+                    "TASK",
+                    task.getDescription(),
+                    null,
+                    task.getRepairCost()
+            ));
+        }
+
+        // CZĘŚCI
+        for (RepairPart part : order.getParts()) {
+            items.add(new RepairOrderItemDto(
+                    "PART",
+                    part.getName(),
+                    part.getQuantity(),
+                    part.getPartPrice()
+            ));
+        }
+
+        return items;
     }
 }

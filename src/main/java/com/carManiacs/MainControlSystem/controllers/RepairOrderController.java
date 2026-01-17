@@ -89,4 +89,10 @@ public class RepairOrderController {
     ) {
         repairOrderService.addPart(orderId, dto);
     }
+
+    @GetMapping("/{id}/items")
+    public List<RepairOrderItemDto> getOrderItems(@PathVariable Long id) {
+        return repairOrderService.getItems(id);
+    }
 }
+

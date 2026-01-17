@@ -367,6 +367,9 @@ const apiService = {
     return res.json();
   },
 
+  getOrderItems: (orderId) =>
+    fetch(`${API_BASE}/orders/${orderId}/items`).then((res) => res.json()),
+
   addOrderItem: async (orderId, payload) => {
     const endpoint =
       payload.type === "TASK"

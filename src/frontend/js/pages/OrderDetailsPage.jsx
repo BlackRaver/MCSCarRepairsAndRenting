@@ -14,12 +14,17 @@ function OrderDetailsPage({ orderId }) {
 
   React.useEffect(() => {
     loadDetails();
+    loadItems();
   }, [orderId]);
 
   const loadDetails = async () => {
     const orderData = await window.apiService.getOrderDetails(orderId);
     setOrder(orderData);
-    setItems(orderData.items || []);
+  };
+
+  const loadItems = async () => {
+    const data = await window.apiService.getOrderItems(orderId);
+    setItems(Array.isArray(data) ? data : []);
   };
 
   if (!order) return <div>Ładowanie...</div>;
@@ -70,7 +75,6 @@ function OrderDetailsPage({ orderId }) {
         </p>
       </div>
 
-      {/* ===== TABELA CZĘŚCI / CZYNNOŚCI ===== */}
       <div className="section-header">
         <h2>🔧 Części i czynności</h2>
         {canEdit && (
@@ -85,13 +89,12 @@ function OrderDetailsPage({ orderId }) {
 
       <DataTable columns={columns} data={items} renderCell={renderCell} />
 
-      {/* ===== MODAL DODAWANIA ===== */}
       {canEdit && (
         <OrderItemModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           orderId={orderId}
-          onSaved={loadDetails}
+          onSaved={loadItems}
         />
       )}
     </div>
