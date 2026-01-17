@@ -173,21 +173,92 @@ const handleEdit = (vehicle) => {
                 isOpen={isModalOpen}
                 onClose={closeModal}
                 title={editingVehicle ? 'Edytuj pojazd' : 'Nowy pojazd'}
-            >
+                >
                 <form onSubmit={handleSubmit}>
-                    <input name="brand" value={formData.brand} onChange={handleChange} required />
-                    <input name="model" value={formData.model} onChange={handleChange} required />
-                    <input
-                        type="number"
-                        name="productionYear"
-                        value={formData.productionYear}
+                    {/* PIERWSZA KOLUMNA: Marka i Model */}
+                    <div className="form-row">
+                    <div className="form-group">
+                        <label className="form-label">Marka</label>
+                        <select
+                            name="brand"
+                            className="form-select"
+                            value={formData.brand}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">Wybierz markę</option>
+                            {[
+                                "Audi",
+                                "BMW",
+                                "Mercedes",
+                                "Volkswagen",
+                                "Toyota",
+                                "Honda",
+                                "Ford",
+                                "Opel",
+                                "Renault",
+                                "Peugeot",
+                                "Fiat",
+                                "Skoda",
+                                "Hyundai",
+                                "Kia",
+                                "Nissan",
+                            ].map(brand => (
+                                <option key={brand} value={brand}>{brand}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="form-group">
+                        <label className="form-label">Model</label>
+                        <input
+                        name="model"
+                        className="form-input"
+                        placeholder="Model pojazdu"
+                        value={formData.model}
                         onChange={handleChange}
                         required
-                    />
-                    <input name="vin" value={formData.vin} onChange={handleChange} required />
+                        />
+                    </div>
+                    </div>
 
+                    {/* DRUGA KOLUMNA: Rok produkcji i VIN */}
+                    <div className="form-row">
+                    <div className="form-group">
+                        <label className="form-label">Rok produkcji</label>
+                        <select
+                            name="productionYear"
+                            className="form-select"
+                            value={formData.productionYear}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">Wybierz rok</option>
+                            {Array.from({ length: 2025 - 1990 + 1 }, (_, i) => 1990 + i).map(year => (
+                                <option key={year} value={year}>{year}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="form-group">
+                        <label className="form-label">VIN</label>
+                        <input
+                        name="vin"
+                        className="form-input"
+                        placeholder="Numer VIN"
+                        value={formData.vin}
+                        onChange={handleChange}
+                        required
+                        />
+                    </div>
+                    </div>
+
+                    {/* TYP POJAZDU */}
+                    <div className="form-group">
+                    <label className="form-label">Typ</label>
                     <select
                         name="vehicleType"
+                        className="form-select"
                         value={formData.vehicleType}
                         onChange={handleChange}
                     >
@@ -195,26 +266,38 @@ const handleEdit = (vehicle) => {
                         <option value="COMPANY">Firma</option>
                         <option value="RENTER">Auto zastępcze</option>
                     </select>
+                    </div>
 
+                    {/* WYBÓR KLIENTA, jeśli nie auto zastępcze */}
                     {formData.vehicleType !== 'RENTER' && (
+                    <div className="form-group">
+                        <label className="form-label">Klient</label>
                         <select
-                            name="clientId"
-                            value={formData.clientId}
-                            onChange={handleChange}
-                            required
+                        name="clientId"
+                        className="form-select"
+                        value={formData.clientId}
+                        onChange={handleChange}
+                        required
                         >
-                            <option value="">Wybierz klienta</option>
-                            {clients.map(c => (
-                                <option key={c.id} value={c.id}>
-                                    {c.firstName} {c.lastName}
-                                </option>
-                            ))}
+                        <option value="">Wybierz klienta</option>
+                        {clients.map(c => (
+                            <option key={c.id} value={c.id}>
+                            {c.firstName} {c.lastName}
+                            </option>
+                        ))}
                         </select>
+                    </div>
                     )}
 
+                    {/* STOPKA MODALA */}
+                    <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" onClick={closeModal}>
+                        Anuluj
+                    </button>
                     <button type="submit" className="btn btn-success">
                         Zapisz
                     </button>
+                    </div>
                 </form>
             </Modal>
         </div>
