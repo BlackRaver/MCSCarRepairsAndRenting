@@ -18,27 +18,18 @@ public class RepairTask {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * Nazwa czynności (np. Wymiana oleju)
-     */
+
     @Column(nullable = false)
     private String name;
 
-    /**
-     * Opcjonalny opis
-     */
     @Column(length = 1000)
     private String description;
 
-    /**
-     * Koszt robocizny dla tej czynności
-     */
-    @Column(nullable = false)
-    private BigDecimal laborCost;
 
-    /**
-     * Zlecenie naprawy
-     */
+    @Column(nullable = false)
+    private BigDecimal repairCost;
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "repair_order_id", nullable = false)
     private RepairOrder repairOrder;

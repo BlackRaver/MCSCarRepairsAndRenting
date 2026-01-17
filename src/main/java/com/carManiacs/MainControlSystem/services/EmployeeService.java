@@ -5,9 +5,7 @@ import com.carManiacs.MainControlSystem.domain.enums.RepairStatus;
 import com.carManiacs.MainControlSystem.domain.models.Employee;
 import com.carManiacs.MainControlSystem.repositories.EmployeeRepository;
 import com.carManiacs.MainControlSystem.repositories.RepairOrderRepository;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +19,7 @@ public class EmployeeService {
     private final RepairOrderRepository repairOrderRepository;
 
     public List<MechanicWorkloadDto> getMechanicWorkloads() {
-        return repairOrderRepository.findMechanicWorkloads(RepairStatus.COMPLETED);
+        return repairOrderRepository.findMechanicWorkloads(RepairStatus.CLOSED);
     }
 
     public List<Employee> getAll() {

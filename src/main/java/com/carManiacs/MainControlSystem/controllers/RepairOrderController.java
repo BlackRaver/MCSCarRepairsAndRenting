@@ -1,12 +1,11 @@
 package com.carManiacs.MainControlSystem.controllers;
 
-import com.carManiacs.MainControlSystem.domain.data.CreateRepairOrderRequest;
-import com.carManiacs.MainControlSystem.domain.data.UpdateRepairOrderRequest;
-import com.carManiacs.MainControlSystem.domain.data.RepairOrderMapper;
-import com.carManiacs.MainControlSystem.domain.data.RepairOrderResponseDto;
+import com.carManiacs.MainControlSystem.domain.data.*;
 import com.carManiacs.MainControlSystem.domain.models.RepairOrder;
 import com.carManiacs.MainControlSystem.services.RepairOrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,10 +18,6 @@ public class RepairOrderController {
     private final RepairOrderService repairOrderService;
     private final RepairOrderMapper repairOrderMapper;
 
-    // =========================
-    // LISTA ZLECEŃ
-    // GET /api/repair-orders
-    // =========================
     @GetMapping
     public List<RepairOrderResponseDto> getAll() {
         return repairOrderService.findAll()
@@ -31,20 +26,12 @@ public class RepairOrderController {
                 .toList();
     }
 
-    // =========================
-    // SZCZEGÓŁY ZLECENIA
-    // GET /api/repair-orders/{id}
-    // =========================
     @GetMapping("/{id}")
     public RepairOrderResponseDto getById(@PathVariable Long id) {
         RepairOrder order = repairOrderService.findById(id);
         return repairOrderMapper.toDto(order);
     }
 
-    // =========================
-    // UTWORZENIE ZLECENIA
-    // POST /api/repair-orders
-    // =========================
     @PostMapping
     public RepairOrderResponseDto create(
             @RequestBody CreateRepairOrderRequest request
@@ -58,10 +45,6 @@ public class RepairOrderController {
         return repairOrderMapper.toDto(order);
     }
 
-    // =========================
-    // EDYCJA ZLECENIA (opis)
-    // PUT /api/repair-orders/{id}
-    // =========================
     @PutMapping("/{id}")
     public RepairOrderResponseDto update(
             @PathVariable Long id,
@@ -75,12 +58,35 @@ public class RepairOrderController {
         return repairOrderMapper.toDto(updated);
     }
 
-    // =========================
-    // USUNIĘCIE ZLECENIA (ADMIN)
-    // DELETE /api/repair-orders/{id}
-    // =========================
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         repairOrderService.delete(id);
+    }
+
+    @PostMapping("/{orderId}/mechanic/{mechanicId}")
+    public RepairOrderResponseDto assignMechanic(
+            @PathVariable Long orderId,
+            @PathVariable Long mechanicId
+    ) {
+        RepairOrder order = repairOrderService.assignMechanic(orderId, mechanicId);
+        return repairOrderMapper.toDto(order);
+    }
+
+    @PostMapping("/{orderId}/tasks")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addTask(
+            @PathVariable Long orderId,
+            @RequestBody @Valid OrderItemRequestDto dto
+    ) {
+        repairOrderService.addTask(orderId, dto);
+    }
+
+    @PostMapping("/{orderId}/parts")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addPart(
+            @PathVariable Long orderId,
+            @RequestBody @Valid OrderItemRequestDto dto
+    ) {
+        repairOrderService.addPart(orderId, dto);
     }
 }

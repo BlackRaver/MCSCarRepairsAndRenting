@@ -145,8 +145,8 @@ function OrdersPage() {
     await loadData();
   };
 
-  const handleEdit = () => {
-    alert("Edycja dostępna w szczegółach zlecenia");
+  const handleEdit = (order) => {
+    window.appNavigate("orderDetails", { orderId: order.id });
   };
 
   const handleDelete = async (id) => {

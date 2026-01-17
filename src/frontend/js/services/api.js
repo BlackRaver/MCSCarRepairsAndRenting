@@ -83,7 +83,7 @@ const apiService = {
   deleteClient: async (id) => {
     if (USE_MOCKS) {
       window.mockData.clients = window.mockData.clients.filter(
-        (c) => c.id !== id
+        (c) => c.id !== id,
       );
       return Promise.resolve(true);
     }
@@ -168,7 +168,7 @@ const apiService = {
   deleteVehicle: async (id) => {
     if (USE_MOCKS) {
       window.mockData.vehicles = window.mockData.vehicles.filter(
-        (v) => v.id !== id
+        (v) => v.id !== id,
       );
       return Promise.resolve(true);
     }
@@ -243,7 +243,7 @@ const apiService = {
   deleteOrder: async (id) => {
     if (USE_MOCKS) {
       window.mockData.orders = window.mockData.orders.filter(
-        (o) => o.id !== id
+        (o) => o.id !== id,
       );
       return Promise.resolve(true);
     }
@@ -273,7 +273,7 @@ const apiService = {
   getEmployeeById: async (id) => {
     if (USE_MOCKS) {
       return Promise.resolve(
-        window.mockData.employees.find((e) => e.id === id)
+        window.mockData.employees.find((e) => e.id === id),
       );
     }
 
@@ -333,7 +333,7 @@ const apiService = {
   deleteEmployee: async (id) => {
     if (USE_MOCKS) {
       window.mockData.employees = window.mockData.employees.filter(
-        (e) => e.id !== id
+        (e) => e.id !== id,
       );
       return Promise.resolve(true);
     }
@@ -349,7 +349,7 @@ const apiService = {
    * Pobiera listę mechaników i ich zleceń
    */
   getMechanicWorkload: async () => {
-    const res = await fetch(`${API_BASE}/employee/workload`);
+    const res = await fetch(`${API_BASE}/employees/workload`);
     return res.json();
   },
 
@@ -359,6 +359,26 @@ const apiService = {
   assignMechanic: async (orderId, mechanicId) => {
     await fetch(`${API_BASE}/orders/${orderId}/mechanic/${mechanicId}`, {
       method: "POST",
+    });
+  },
+
+  getOrderDetails: async (id) => {
+    const res = await fetch(`${API_BASE}/orders/${id}`);
+    return res.json();
+  },
+
+  addOrderItem: async (orderId, payload) => {
+    const endpoint =
+      payload.type === "TASK"
+        ? `/orders/${orderId}/tasks`
+        : `/orders/${orderId}/parts`;
+
+    const { type, ...body } = payload;
+
+    await fetch(`${API_BASE}${endpoint}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
     });
   },
 };

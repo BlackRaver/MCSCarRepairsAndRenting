@@ -24,9 +24,7 @@ public class RepairPart {
     @Column(nullable = false)
     private String name;
 
-    /**
-     * Ilość użytych sztuk
-     */
+
     @Column(nullable = false)
     private Integer quantity;
 
@@ -34,7 +32,7 @@ public class RepairPart {
      * Cena jednostkowa w momencie naprawy
      */
     @Column(nullable = false)
-    private BigDecimal unitPrice;
+    private BigDecimal partPrice;
 
     /**
      * Zlecenie naprawy
