@@ -46,39 +46,68 @@ function OrderItemModal({ isOpen, onClose, onSaved, orderId }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Dodaj pozycję">
       <form onSubmit={handleSubmit}>
-        <select value={type} onChange={handleTypeChange}>
-          <option value="TASK">Czynność</option>
-          <option value="PART">Część</option>
-        </select>
-
-        <input
-          placeholder="Opis"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-        />
-
-        <input
-          type="number"
-          placeholder="Cena"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          required
-          min="0"
-          step="0.01"
-        />
-
-        {type === "PART" && (
-          <input
-            type="number"
-            placeholder="Ilość"
-            value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
+        {/* TYP POZYCJI */}
+        <div className="form-group">
+          <label className="form-label">Typ pozycji</label>
+          <select
+            name="type"
+            className="form-select"
+            value={type}
+            onChange={handleTypeChange}
             required
-            min="1"
+          >
+            <option value="TASK">Czynność</option>
+            <option value="PART">Część</option>
+          </select>
+        </div>
+
+        {/* OPIS */}
+        <div className="form-group">
+          <label className="form-label">Opis</label>
+          <input
+            name="description"
+            className="form-input"
+            placeholder="Opis"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
           />
+        </div>
+
+        {/* CENA */}
+        <div className="form-group">
+          <label className="form-label">Cena</label>
+          <input
+            name="price"
+            type="number"
+            className="form-input"
+            placeholder="Cena"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            required
+            min="0"
+            step="0.01"
+          />
+        </div>
+
+        {/* ILOŚĆ – tylko dla części */}
+        {type === "PART" && (
+          <div className="form-group">
+            <label className="form-label">Ilość</label>
+            <input
+              name="quantity"
+              type="number"
+              className="form-input"
+              placeholder="Ilość"
+              value={quantity}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              required
+              min="1"
+            />
+          </div>
         )}
 
+        {/* STOPKA MODALA */}
         <div className="modal-footer">
           <button type="button" className="btn btn-secondary" onClick={onClose}>
             Anuluj
@@ -89,6 +118,7 @@ function OrderItemModal({ isOpen, onClose, onSaved, orderId }) {
         </div>
       </form>
     </Modal>
+
   );
 }
 

@@ -42,57 +42,74 @@ function ClientContactsModal({ client, isOpen, onClose }) {
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="Dane kontaktowe">
-
             <h3>
                 {client.clientType === 'COMPANY'
-                    ? client.companyName
-                    : `${client.firstName} ${client.lastName}`}
+                ? client.companyName
+                : `${client.firstName} ${client.lastName}`}
             </h3>
 
             {/* ===== TABELA KONTAKTÓW ===== */}
             <table className="data-table">
                 <thead>
-                    <tr>
-                        <th>Typ</th>
-                        <th>Wartość</th>
-                        <th>Akcje</th>
-                    </tr>
+                <tr>
+                    <th>Typ</th>
+                    <th>Wartość</th>
+                    <th>Akcje</th>
+                </tr>
                 </thead>
                 <tbody>
-                    {contacts.map((c, index) => (
-                        <tr key={index}>
-                            <td>{c.type}</td>
-                            <td>{c.contactValue}</td>
-                            <td>
-                                <button onClick={() => handleDelete(index)}>
-                                    🗑️
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                    {contacts.length === 0 && (
-                        <tr>
-                            <td colSpan="3">Brak danych kontaktowych</td>
-                        </tr>
-                    )}
+                {contacts.map((c, index) => (
+                    <tr key={index}>
+                    <td>{c.type}</td>
+                    <td>{c.contactValue}</td>
+                    <td>
+                        <button
+                        type="button"
+                        className="btn btn-danger btn-sm"
+                        onClick={() => handleDelete(index)}
+                        >
+                        🗑️
+                        </button>
+                    </td>
+                    </tr>
+                ))}
+                {contacts.length === 0 && (
+                    <tr>
+                    <td colSpan="3">Brak danych kontaktowych</td>
+                    </tr>
+                )}
                 </tbody>
             </table>
 
-            {/* ===== DODAWANIE ===== */}
-            <div className="contact-form">
-                <select value={type} onChange={e => setType(e.target.value)}>
+            {/* ===== DODAWANIE KONTAKTU ===== */}
+            <div className="form-row">
+                <div className="form-group">
+                <label className="form-label">Typ kontaktu</label>
+                <select
+                    name="contactType"
+                    className="form-select"
+                    value={type}
+                    onChange={e => setType(e.target.value)}
+                >
                     <option value="PHONE">Telefon</option>
                     <option value="EMAIL">E-mail</option>
                     <option value="ADDRESS">Adres</option>
                 </select>
+                </div>
 
+                <div className="form-group">
+                <label className="form-label">Wartość</label>
                 <input
                     type="text"
+                    name="contactValue"
+                    className="form-input"
                     placeholder="Wartość"
                     value={value}
                     onChange={e => setValue(e.target.value)}
                 />
+                </div>
 
+                <div className="form-group" style={{ alignSelf: 'end' }}>
                 <button
                     type="button"
                     className="btn btn-secondary"
@@ -100,19 +117,20 @@ function ClientContactsModal({ client, isOpen, onClose }) {
                 >
                     ➕ Dodaj
                 </button>
+                </div>
             </div>
 
-            {/* ===== FOOTER ===== */}
+            {/* ===== FOOTER MODALA ===== */}
             <div className="modal-footer">
-                <button onClick={onClose} className="btn btn-secondary">
-                    Anuluj
+                <button type="button" onClick={onClose} className="btn btn-secondary">
+                Anuluj
                 </button>
-                <button onClick={handleSave} className="btn btn-success">
-                    💾 Zapisz zmiany
+                <button type="button" onClick={handleSave} className="btn btn-success">
+                💾 Zapisz zmiany
                 </button>
             </div>
-
         </Modal>
+
     );
 }
 

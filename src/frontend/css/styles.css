@@ -118,10 +118,11 @@ body {
 }
 
 .header-actions {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;        /* Zawijanie przy mniejszej szerokości */
+  gap: 0.75rem;           /* Odstęp między elementami */
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
 /* ========================================
@@ -173,14 +174,15 @@ body {
 }
 
 .filter-tab {
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    background: var(--bg-card);
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.2s;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  flex-shrink: 0;       /* Zapobiega kurczeniu się przy zbyt wielu przyciskach */
 }
 
 .filter-tab:hover {
@@ -669,4 +671,76 @@ body {
     .filter-tabs {
         flex-wrap: wrap;
     }
+}
+
+
+
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.page-header .btn {
+  flex-shrink: 0;
+}
+
+.order-summary {
+  background: var(--bg-card);
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius);
+  margin-bottom: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.order-summary p {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.order-summary strong {
+  color: var(--text-secondary);
+}
+
+/* =========================
+   SECTION HEADER
+   ========================= */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.section-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.section-header .btn {
+  flex-shrink: 0;
+}
+
+/* =========================
+   RESPONSIVENESS
+   ========================= */
+@media (max-width: 768px) {
+  .order-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
 }
