@@ -42,28 +42,51 @@ function EmployeeModal({ isOpen, onClose, onSave, employee }) {
       title={employee ? "Edytuj pracownika" : "Nowy pracownik"}
     >
       <form onSubmit={handleSubmit}>
-        <input
-          name="firstName"
-          value={formData.firstName}
-          onChange={handleChange}
-          placeholder="Imię"
-          required
-        />
+        {/* PIERWSZA KOLUMNA: Imię i Nazwisko */}
+        <div className="form-row">
+          <div className="form-group">
+            <label className="form-label">Imię</label>
+            <input
+              name="firstName"
+              className="form-input"
+              placeholder="Imię"
+              value={formData.firstName}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <input
-          name="lastName"
-          value={formData.lastName}
-          onChange={handleChange}
-          placeholder="Nazwisko"
-          required
-        />
+          <div className="form-group">
+            <label className="form-label">Nazwisko</label>
+            <input
+              name="lastName"
+              className="form-input"
+              placeholder="Nazwisko"
+              value={formData.lastName}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </div>
 
-        <select name="role" value={formData.role} onChange={handleChange}>
-          <option value="EMPLOYEE">Pracownik</option>
-          <option value="MECHANIC">Mechanik</option>
-          <option value="ADMIN">Administrator</option>
-        </select>
+        {/* DRUGA KOLUMNA: Rola */}
+        <div className="form-group">
+          <label className="form-label">Rola</label>
+          <select
+            name="role"
+            className="form-select"
+            value={formData.role}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Wybierz rolę</option>
+            <option value="EMPLOYEE">Pracownik</option>
+            <option value="MECHANIC">Mechanik</option>
+            <option value="ADMIN">Administrator</option>
+          </select>
+        </div>
 
+        {/* STOPKA MODALA */}
         <div className="modal-footer">
           <button type="button" onClick={onClose} className="btn btn-secondary">
             Anuluj
@@ -74,6 +97,7 @@ function EmployeeModal({ isOpen, onClose, onSave, employee }) {
         </div>
       </form>
     </Modal>
+
   );
 }
 

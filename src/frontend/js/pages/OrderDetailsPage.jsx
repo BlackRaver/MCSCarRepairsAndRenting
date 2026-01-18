@@ -55,7 +55,7 @@ function OrderDetailsPage({ orderId }) {
           className="btn btn-secondary"
           onClick={() => window.appNavigate("orders")}
         >
-          ⬅ Powrót
+          Powrót
         </button>
       </div>
 

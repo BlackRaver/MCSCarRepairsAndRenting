@@ -214,20 +214,26 @@ function OrdersPage() {
       {!isClient && (
         <Modal isOpen={isModalOpen} onClose={closeModal} title="Nowe zlecenie">
           <form onSubmit={handleSubmit}>
-            <select
-              name="vehicleId"
-              value={formData.vehicleId}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Wybierz pojazd</option>
-              {vehicles.map((v) => (
-                <option key={v.id} value={v.id}>
-                  {v.brand} {v.model} ({v.productionYear})
-                </option>
-              ))}
-            </select>
+            {/* WYBÓR POJAZDU */}
+            <div className="form-group">
+              <label className="form-label">Pojazd</label>
+              <select
+                name="vehicleId"
+                className="form-select"
+                value={formData.vehicleId}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Wybierz pojazd</option>
+                {vehicles.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.brand} {v.model} ({v.productionYear})
+                  </option>
+                ))}
+              </select>
+            </div>
 
+            {/* STOPKA MODALA */}
             <div className="modal-footer">
               <button
                 type="button"
@@ -242,6 +248,7 @@ function OrdersPage() {
             </div>
           </form>
         </Modal>
+
       )}
 
       <AssignMechanicModal
