@@ -80,7 +80,7 @@ function EmployeeModal({ isOpen, onClose, onSave, employee }) {
             required
           >
             <option value="">Wybierz rolę</option>
-            <option value="EMPLOYEE">Pracownik</option>
+            <option value="RECEPTIONIST">Pracownik Recepcji</option>
             <option value="MECHANIC">Mechanik</option>
             <option value="ADMIN">Administrator</option>
           </select>
@@ -97,7 +97,6 @@ function EmployeeModal({ isOpen, onClose, onSave, employee }) {
         </div>
       </form>
     </Modal>
-
   );
 }
 
